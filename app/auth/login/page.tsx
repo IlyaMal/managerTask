@@ -33,7 +33,7 @@ export default function LoginPage() {
       setError(error.message)
     } else {
       console.log("✅ Успешный вход:", data)
-      window.location.href = "/" // редирект после входа
+      window.location.href = "/admin" // редирект после входа
     }
   }
 
