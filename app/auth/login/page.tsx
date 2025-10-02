@@ -1,22 +1,40 @@
 "use client"
 
 import type React from "react"
-
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { useState } from "react"
+import { createClient } from "@/lib/supabase/client"
 
 export default function LoginPage() {
+  const supabase = createClient() // ✅ можно создавать один раз в компоненте
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Login placeholder - Email:", email)
-    // Placeholder: No actual authentication
+    setError(null)
+    setLoading(true)
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    setLoading(false)
+
+    if (error) {
+      setError(error.message)
+    } else {
+      console.log("✅ Успешный вход:", data)
+      window.location.href = "/" // редирект после входа
+    }
   }
 
   return (
@@ -51,8 +69,9 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-                <Button type="submit" className="w-full">
-                  Войти
+                {error && <p className="text-sm text-red-500">{error}</p>}
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Входим..." : "Войти"}
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm">
