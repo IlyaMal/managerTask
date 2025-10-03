@@ -26,14 +26,13 @@ export function ManagersTab() {
     setIsLoading(true)
 
     const { data, error } = await supabase
-      .from("managers")
-      .select(
-        `
-        *,
-        user:users(*)
-      `,
-      )
-      .order("created_at", { ascending: false })
+  .from("managers")
+  .select(`
+    *,
+    user:users!managers_created_by_fkey(*)
+  `)
+  .order("created_at", { ascending: false })
+
 
     if (!error && data) {
       setManagers(data as ManagerWithUser[])
