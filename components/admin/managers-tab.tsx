@@ -29,7 +29,7 @@ export function ManagersTab() {
   .from("managers")
   .select(`
     *,
-    user:users!managers_created_by_fkey(*)
+    user:users!managers_user_id_fkey(*)
   `)
   .order("created_at", { ascending: false })
 
