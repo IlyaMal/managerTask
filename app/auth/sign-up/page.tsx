@@ -55,12 +55,16 @@ export default function SignUpPage() {
       }
 
       // ✅ Запись в таблицу users
-      const { error: dbError } = await supabase.from("users").insert({
-        id: data.user.id, // UUID из Auth
-        full_name: formData.fullName,
-        email: formData.email,
-        role: formData.role,
-      })
+      const { error: dbError } = await supabase.from("users").upsert(
+  {
+    id: data.user.id,
+    full_name: formData.fullName,
+    email: formData.email,
+    role: formData.role,
+  },
+  { onConflict: "id" } // обновит, если уже есть запись
+)
+
 
       if (dbError) {
         console.error("Ошибка записи в таблицу users:", dbError.message)
