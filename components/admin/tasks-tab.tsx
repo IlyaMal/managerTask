@@ -42,24 +42,23 @@ export function TasksTab() {
     setIsLoading(true)
 
     const { data, error } = await supabase
-      .from("tasks")
-      .select(
-        `
+  .from("tasks")
+  .select(`
+    *,
+    client_account:client_accounts(
+      *,
+      manager:managers(
         *,
-        client_account:client_accounts(
-          *,
-          manager:managers(
-            *,
-            user:users(*)
-          )
-        ),
-        manager:managers(
-          *,
-          user:users(*)
-        )
-      `,
+        user:users!managers_user_id_fkey(*)
       )
-      .order("created_at", { ascending: false })
+    ),
+    manager:managers(
+      *,
+      user:users!managers_user_id_fkey(*)
+    )
+  `)
+  .order("created_at", { ascending: false })
+
 
     if (!error && data) {
       setTasks(data as TaskWithRelations[])
