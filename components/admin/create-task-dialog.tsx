@@ -58,7 +58,7 @@ export function CreateTaskDialog({ open, onOpenChange, onSuccess }: CreateTaskDi
       .select(
         `
         *,
-        user:users(*)
+        user:users!managers_user_id_fkey(*)
       `,
       )
       .eq("status", "active")
